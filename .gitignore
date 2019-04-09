@@ -1,2 +1,6 @@
 # Ignore all items in sandbox
 sandbox/
+
+## Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
