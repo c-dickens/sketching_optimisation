@@ -1,4 +1,0 @@
-{
-  "test_random_projections.py::test_embedding_improves_with_m": true,
-  "test_random_projections.py::test_sjlt_error_decreases_as_s_increases": true
-}
