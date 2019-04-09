@@ -99,17 +99,3 @@ def test_sketch_data_targets(data_to_test,all_sketch_methods):
         SA,Sb = summary.sketch_data_targets(y)
         assert SA.shape == (sketch_dim,d)
         assert Sb.shape == (sketch_dim,)
-
-
-
-
-
-
-def main():
-    X = np.random.randn(10_000,50)
-    summary = rp(X,1000,'sjlt')
-    sX = summary.sketch()
-    print('sX shape = ', sX.shape)
-
-if __name__ == '__main__':
-    main()
