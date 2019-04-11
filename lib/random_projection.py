@@ -74,7 +74,7 @@ class RandomProjection:
 
         ### For sparse sketches generate hash functions here so
         # that they aren't timed in the call to sketch.
-        if self.sketch_type is 'sjlt' or 'countSketch':
+        elif self.sketch_type is 'sjlt' or 'countSketch':
             self.coo_data = coo_matrix(data)
             self.rows = self.coo_data.row
             self.cols = self.coo_data.col
