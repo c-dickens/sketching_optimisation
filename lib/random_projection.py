@@ -46,6 +46,37 @@ class RandomProjection:
         self.proj_dim = proj_dim
         self.sketch_type = sketch_type
 
+        # Create an attribute for dense data for later reference.
+        # If data is ndarray then just make new reference, otherwise, if input
+        # is sparse then make reference for dense data.
+        if isinstance(self.data, np.ndarray):
+            self.dense_data = self.data
+        elif isinstance(self.data,sparse.coo.coo_matrix):
+            print('Converting sparse to dense data.')
+            self.dense_data = self.data.toarray()
+
+        # Convert data to sparse data for cross-comparison between sketches
+        # and accept sparse inputs
+        # Note that the second arg for `isinstance` depends on how the scipy
+        # import is written. If it is `import scipy` then we need
+        # `scipy.sparse...` but if we have `import scipy.sparse as sparse`
+        # then `sparse.coo....` will suffice.
+
+        # LOGIC: if self.data is sparse just make references for later
+        # otherwise, convert to sparse data.
+        if isinstance(self.data, sparse.coo.coo_matrix):
+            self.coo_data = self.data
+            self.rows = self.coo_data.row
+            self.cols = self.coo_data.col
+            self.vals = self.coo_data.data
+        else:
+            self.coo_data = coo_matrix(data)
+            self.rows = self.coo_data.row
+            self.cols = self.coo_data.col
+            self.vals = self.coo_data.data
+
+
+
         if self.proj_dim > self.n:
             raise Exception(f'Sketching with projection dimension\
                              $self.proj_dim > $self.n is not supported')
@@ -67,18 +98,14 @@ class RandomProjection:
             # the hadamard transform
             self.new_n = self.data.shape[0]
 
-        ### SPARSE SKETCHES
-        ### Throw an error here is sketch type is sjlt but
-        ### col sparsity is 1
+        ######################## SPARSE SKETCHES ##############################
 
 
         ### For sparse sketches generate hash functions here so
         # that they aren't timed in the call to sketch.
+        # Would it be better to only accept sparse datasets for the sparse
+        # sketches?
         elif self.sketch_type is 'sjlt' or 'countSketch':
-            self.coo_data = coo_matrix(data)
-            self.rows = self.coo_data.row
-            self.cols = self.coo_data.col
-            self.vals = self.coo_data.data
             self.col_sparsity = col_sparsity
             if self.sketch_type is 'sjlt' and self.col_sparsity == 1:
                 self.col_sparsity = 2
@@ -139,7 +166,7 @@ class RandomProjection:
         S_ij = G_ij ~ N(0,1) / sqrt(proj_dim)'''
         S = np.random.randn(self.proj_dim,self.n)
         S /= np.sqrt(self.proj_dim)
-        return S@self.data
+        return S@self.dense_data
 
     def SRHT(self):
         '''
@@ -160,7 +187,7 @@ class RandomProjection:
         FFTed versions of the columns) to do the
         entire transform'''
         diag = np.random.choice([1,-1], self.new_n)[:,None]
-        signed_data = diag*self.data
+        signed_data = diag*self.dense_data
 
         # the [:,None] syntax is just to add a 2nd dimension
         # so that the columns after hadamard transform can
