@@ -110,49 +110,6 @@ class RandomProjection:
             if self.sketch_type is 'sjlt' and self.col_sparsity == 1:
                 self.col_sparsity = 2
 
-
-            # To make the code more general let's make an array of
-            # random indices so that we can call the same code for
-            # sjlt as countSketch.
-            # we need self.column_sparsity copies of iid rvs
-            # for the row and sign maps so put these in the array.
-            self._row_map = np.zeros((self.col_sparsity,self.n))
-            self._sign_map = np.zeros((self.col_sparsity,self.n))
-
-            if self.col_sparsity == 1:
-                # Generate a single list for :
-                # 1. row_map
-                # 2. sign_map
-                # Generate single array self.proj_dim x self.d
-                # to populate for the sketch
-                self._row_map = np.random.choice(self.proj_dim,
-                                             self.n,
-                                             replace=True)
-                self._sign_map = np.random.choice(2, self.n, replace=True) * 2 - 1
-                self.SA = np.zeros((self.proj_dim,self.d))
-            else:
-                # set the new projection dimension for sjlt
-                # this is because the sjlt is an m x n sketch
-                # composed of s*(m/s) x n shorter countSketches.
-                self.sjlt_proj_dim = self.proj_dim // self.col_sparsity
-
-                # Generate array whose rows are lists for :
-                # 1. row_map
-                # 2. sign_map
-                # Generate single array self.sjlt_proj_dim
-                # to populate for the sketch to which new local
-                # sketches will be added.
-
-                for _ in range(self.col_sparsity):
-                    self._row_map[_,:] = np.random.choice(self.sjlt_proj_dim,
-                                                 self.n,
-                                                 replace=True)
-                    self._sign_map[_,:] = np.random.choice(2, self.n, replace=True) * 2 - 1
-                self._row_map = self._row_map.astype(int)
-                self.SA = np.zeros((self.sjlt_proj_dim,self.d))
-                #print('size of SA ', self.SA.shape)
-                #print('dType of row map ', self._row_map.dtype)
-
         ## Function dictionary to call later on.
 
         self.fct_dict = {'gaussian'    : self.GaussianSketch,
@@ -219,6 +176,11 @@ class RandomProjection:
         This is just the  SJLT but with column sparsity 1.
         Given its own method to ensure speed is not
         implicated during later testing.'''
+        self.SA = np.zeros((self.proj_dim,self.d))
+        self._row_map = np.random.choice(self.proj_dim,
+                                     self.n,
+                                     replace=True)
+        self._sign_map = np.random.choice(2, self.n, replace=True) * 2 - 1
         return fast_countSketch(self.SA,
                     self.rows,
                     self.cols,
@@ -237,6 +199,29 @@ class RandomProjection:
         2. Use initial hash functions as decided above in the
         class definition and then generate new hashes for
         subsequent countsketch calls.'''
+        # set the new projection dimension for sjlt
+        # this is because the sjlt is an m x n sketch
+        # composed of s*(m/s) x n shorter countSketches.
+        self.sjlt_proj_dim = self.proj_dim // self.col_sparsity
+        self.SA = np.zeros((self.sjlt_proj_dim,self.d))
+        self._row_map = np.zeros((self.col_sparsity,self.n))
+        self._sign_map = np.zeros((self.col_sparsity,self.n))
+        # Generate array whose rows are lists for :
+        # 1. row_map
+        # 2. sign_map
+        # Generate single array self.sjlt_proj_dim
+        # to populate for the sketch to which new local
+        # sketches will be added.
+
+        for _ in range(self.col_sparsity):
+            self._row_map[_,:] = np.random.choice(self.sjlt_proj_dim,
+                                         self.n,
+                                         replace=True)
+            self._sign_map[_,:] = np.random.choice(2, self.n, replace=True) * 2 - 1
+        self._row_map = self._row_map.astype(int)
+
+        #print('size of SA ', self.SA.shape)
+        #print('dType of row map ', self._row_map.dtype)
         local_row_map = self._row_map[0,:]
         local_sign_map = self._sign_map[0,:]
         global_summary = fast_countSketch(self.SA,
