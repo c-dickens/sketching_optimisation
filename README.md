@@ -16,8 +16,8 @@ To run these experiments:
 howevever you will need to follow the urls in the `all_datasets` dictionary in `get_datasets.py` 
 to download the libsvm files.  These *must* be saved in the same directory as `get_datasets.py`.
 
+### To do:
 
-To do:
 0. Running the profile script it is clear that the bottleneck is repeated
 conversion of the `ndarray` data type to the `coo_matrix`.
 Two things can be done:
