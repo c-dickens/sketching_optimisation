@@ -51,7 +51,7 @@ class RandomProjection:
         # is sparse then make reference for dense data.
         if isinstance(self.data, np.ndarray):
             self.dense_data = self.data
-        elif isinstance(self.data,sparse.coo.coo_matrix):
+        elif isinstance(self.data,sparse.coo.coo_matrix) or isinstance(self.data, sparse.csr.csr_matrix):
             print('Converting sparse to dense data.')
             self.dense_data = self.data.toarray()
 
@@ -66,6 +66,11 @@ class RandomProjection:
         # otherwise, convert to sparse data.
         if isinstance(self.data, sparse.coo.coo_matrix):
             self.coo_data = self.data
+            self.rows = self.coo_data.row
+            self.cols = self.coo_data.col
+            self.vals = self.coo_data.data
+        elif isinstance(self.data, sparse.csr.csr_matrix):
+            self.coo_data = self.data.tocoo()
             self.rows = self.coo_data.row
             self.cols = self.coo_data.col
             self.vals = self.coo_data.data
@@ -88,15 +93,14 @@ class RandomProjection:
             # the intermediate function after hadamard transform
             next_power2_data = shift_bit_length(self.n)
             deficit = next_power2_data - self.n
-            self.data = np.concatenate((self.data,
+            self.dense_data = np.concatenate((self.dense_data,
                                         np.zeros((deficit,self.d),
-                                                 dtype=self.data.dtype)),
-                                       axis=0)
+                                        dtype=self.dense_data.dtype)), axis=0)
             # set the new n for later use although
             # sampling will only ever be from self.n
             # as the power of 2 extension only necessary for
             # the hadamard transform
-            self.new_n = self.data.shape[0]
+            self.new_n = self.dense_data.shape[0]
 
         ######################## SPARSE SKETCHES ##############################
 
@@ -158,7 +162,7 @@ class RandomProjection:
         # perform the in place fht on each column
         for _col in range(self.d):
             # Y[:,_col] = pyfht.fht(self.data[:,_col])
-            Y.append(pyfht.fht(self.data[:,_col]))
+            Y.append(pyfht.fht(self.dense_data[:,_col]))
         Y = np.array(Y)
         Y = Y.T
         #print(type(Y),Y.shape)
