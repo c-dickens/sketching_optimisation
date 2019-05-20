@@ -52,7 +52,7 @@ class RandomProjection:
         if isinstance(self.data, np.ndarray):
             self.dense_data = self.data
         elif isinstance(self.data,sparse.coo.coo_matrix) or isinstance(self.data, sparse.csr.csr_matrix):
-            print('Converting sparse to dense data.')
+            #print('Converting sparse to dense data.')
             self.dense_data = self.data.toarray()
 
         # Convert data to sparse data for cross-comparison between sketches
