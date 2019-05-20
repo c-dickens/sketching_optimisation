@@ -3,6 +3,14 @@
 Examples of random projection sketching methods to reduce the computational
 burden of intensive matrix computations.
 
+
+### Completed Experiments:
+Experiment `exp` is located in `experiments/` and the corresponding output is found in
+`output/exp`.
+Note that there will be intermediate directories in the above substitution.
+1. `baselines/metadata.py` -- Computes the basic metadata for the real world datasets used.
+
+
 To run these experiments:
 1. Ensure that the necessary datasets are downloaded.  The UCI ones have the url hardcoded, 
 howevever you will need to follow the urls in the `all_datasets` dictionary in `get_datasets.py` 
