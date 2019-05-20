@@ -80,7 +80,10 @@ def get_libsvm_data(dataset):
     X, y = load_svmlight_file(input_file_name)
     X = X.toarray()
     data = coo_matrix(np.c_[X,y]) #np.concatenate((X, y[:,None]), axis=1)
-    np.save(out_file, data)
+    print(type(X),X.shape)
+    print(type(data),data.shape)
+    save_npz(out_file,data)
+    #np.save(out_file, data)
 
 
 
