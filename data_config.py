@@ -19,4 +19,4 @@ for data_name in all_datasets.keys():
                            'repeats'  : num_repeats}
     datasets[data_name]['input_destination'] = all_datasets[data_name]['input_destination']
     #print(file_name)
-print(datasets)
+#print(datasets)
