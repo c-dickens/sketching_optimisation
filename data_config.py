@@ -10,12 +10,13 @@ num_repeats = 10
 for data_name in all_datasets.keys():
     file_name = all_datasets[data_name]['outputFileName'][3:]
 
-    if datasets[data_name]['input_destination'] == 'LIBSVM':
+    if all_datasets[data_name]['input_destination'] == 'LIBSVM':
         _ext = '.npz'
     else:
         _ext = '.npy'
 
-    datasets[data_name] = {'filepath' : 'data/' + file_name + ext,
+    datasets[data_name] = {'filepath' : 'data/' + file_name + _ext,
                            'repeats'  : num_repeats}
+    datasets[data_name]['input_destination'] = all_datasets[data_name]['input_destination']
     #print(file_name)
-#print(datasets)
+print(datasets)
