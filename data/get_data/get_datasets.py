@@ -16,6 +16,7 @@ from scipy.io import loadmat
 from scipy.sparse import save_npz
 from sklearn.datasets import load_svmlight_file
 import os.path
+import openml
 
 all_datasets = {
     "YearPredictionMSD" : {
@@ -46,6 +47,44 @@ all_datasets = {
         'target_col' : 'libsvm',
         'input_destination' : 'LIBSVM'
        },
+
+       ### These are the OPENML datasets.
+       ### Do not need a target col as this is done in the openml wrapper.
+      "KDD98" : {
+        "url" : 'https://www.openml.org/d/23513',
+        "outputFileName" : '../kdd98',
+        'input_destination' : 'OPENML',
+        'openml_id' : 23513
+      },
+
+      "aloi" : {
+          "url" : 'https://www.openml.org/d/1592',
+          "outputFileName" : '../aloi',
+          'input_destination' : 'OPENML',
+          'openml_id' : 1592
+      },
+
+      "KDDCup99" : {
+          "url" : 'https://www.openml.org/d/1113',
+          "outputFileName" : '../kdd_cup_99',
+          'input_destination' : 'OPENML',
+          'openml_id' : 1113
+      },
+
+      "covertype" : {
+        "url" : 'https://www.openml.org/d/293',
+        "outputFileName" : '../covertype',
+        'input_destination' : 'OPENML',
+        'openml_id' : 293
+      },
+
+      "fars" : {
+        "url" : 'https://www.openml.org/d/40672',
+        "outputFileName" : '../fars',
+        'input_destination' : 'OPENML',
+        'openml_id' : 40672
+      },
+
 }
 
 def get_uci_data(dataset):
@@ -67,7 +106,7 @@ def get_uci_data(dataset):
     y = data[:, target]
     X = data[:,col_selector]
     np.save(out_file, np.c_[X,y])
-    return data
+    #return data
 
 def get_libsvm_data(dataset):
     # Read in libsvm data. In sparse representation so
@@ -85,6 +124,34 @@ def get_libsvm_data(dataset):
     save_npz(out_file,data)
     #np.save(out_file, data)
 
+def get_openml_data(dataset):
+    '''Tool to downloads openml data and put into correct format'''
+    out_file = all_datasets[dataset]['outputFileName']
+    _id = all_datasets[dataset]['openml_id']
+    dataset = openml.datasets.get_dataset(_id)
+
+    # Print a summary
+    print("This is dataset '%s', the target feature is '%s'" %
+          (dataset.name, dataset.default_target_attribute))
+    X, y = dataset.get_data( target=dataset.default_target_attribute)
+    n,d = X.shape
+    print(f'Shape of data: {n},{d}')
+    print(f'Aspect ratio: {d/n}')
+    print(f'Type of data: {type(X)}')
+
+    if isinstance(X,csr_matrix):
+        nnz = X.count_nonzero()
+        Xdense = X.toarray()
+        data = coo_matrix(np.c_[Xdense,y])
+        print(type(data),data.shape)
+        save_npz(out_file,data)
+    else:
+        nnz = np.count_nonzero(X)
+        data = np.c_[X,y]
+        np.save(out_file, np.c_[X,y])
+
+    print(f'Density: {nnz/(n*d)}')
+
 
 
 def get_datasets():
@@ -99,10 +166,13 @@ def get_datasets():
 
         if not (os.path.isfile(out_file + '.npy') or os.path.isfile(out_file + '.npz')):
             if in_dest == 'UCI':
-                data = get_uci_data(dataset)
+                get_uci_data(dataset)
 
             elif in_dest == 'LIBSVM':
                 get_libsvm_data(dataset)
+
+            elif in_dest == 'OPENML':
+                get_openml_data(dataset)
 
 
 
