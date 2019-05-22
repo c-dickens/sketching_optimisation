@@ -15,6 +15,8 @@ To run these experiments:
 1. Ensure that the necessary datasets are downloaded.  The UCI ones have the url hardcoded, 
 howevever you will need to follow the urls in the `all_datasets` dictionary in `get_datasets.py` 
 to download the libsvm files.  These *must* be saved in the same directory as `get_datasets.py`.
+The script will automatically download the UCI and OPENML datasets.
+This file must be compiled and run from the directory (I don't know why)
 
 ### To do:
 
