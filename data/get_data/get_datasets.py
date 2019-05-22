@@ -23,7 +23,8 @@ all_datasets = {
           "url" : 'https://archive.ics.uci.edu/ml/machine-learning-databases/00203/YearPredictionMSD.txt.zip',
           "outputFileName" : '../YearPredictionMSD',
           'target_col' : 0,
-          'input_destination' : 'UCI'
+          'input_destination' : 'UCI',
+          'sparse_format' : False
          },
 
 
@@ -31,21 +32,24 @@ all_datasets = {
                "url" : 'https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#w4a',
                "outputFileName" : '../w4a',
                'target_col' : 'libsvm',
-               'input_destination' : 'LIBSVM'
+               'input_destination' : 'LIBSVM',
+               'sparse_format' : True
               },
 
     "w6a" : {
         "url" : 'https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#w6a',
         "outputFileName" : '../w6a',
         'target_col' : 'libsvm',
-        'input_destination' : 'LIBSVM'
+        'input_destination' : 'LIBSVM',
+        'sparse_format' : True
        },
 
     "w8a" : {
         "url" : 'https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/binary.html#w8a',
         "outputFileName" : '../w8a',
         'target_col' : 'libsvm',
-        'input_destination' : 'LIBSVM'
+        'input_destination' : 'LIBSVM',
+        'sparse_format' : True
        },
 
        ### These are the OPENML datasets.
@@ -54,35 +58,40 @@ all_datasets = {
         "url" : 'https://www.openml.org/d/23513',
         "outputFileName" : '../kdd98',
         'input_destination' : 'OPENML',
-        'openml_id' : 23513
+        'openml_id' : 23513,
+        'sparse_format' : False
       },
 
       "aloi" : {
           "url" : 'https://www.openml.org/d/1592',
           "outputFileName" : '../aloi',
           'input_destination' : 'OPENML',
-          'openml_id' : 1592
+          'openml_id' : 1592,
+          'sparse_format' : True
       },
 
       "KDDCup99" : {
           "url" : 'https://www.openml.org/d/1113',
           "outputFileName" : '../kdd_cup_99',
           'input_destination' : 'OPENML',
-          'openml_id' : 1113
+          'openml_id' : 1113,
+          'sparse_format' : False
       },
 
       "covertype" : {
         "url" : 'https://www.openml.org/d/293',
         "outputFileName" : '../covertype',
         'input_destination' : 'OPENML',
-        'openml_id' : 293
+        'openml_id' : 293,
+        'sparse_format' : True
       },
 
       "fars" : {
         "url" : 'https://www.openml.org/d/40672',
         "outputFileName" : '../fars',
         'input_destination' : 'OPENML',
-        'openml_id' : 40672
+        'openml_id' : 40672,
+        'sparse_format' : False
       },
 
 }
@@ -142,12 +151,14 @@ def get_openml_data(dataset):
     if isinstance(X,csr_matrix):
         nnz = X.count_nonzero()
         Xdense = X.toarray()
+        Xdense = np.nan_to_num(Xdense)
         data = coo_matrix(np.c_[Xdense,y])
         print(type(data),data.shape)
         save_npz(out_file,data)
     else:
         nnz = np.count_nonzero(X)
         data = np.c_[X,y]
+        data = np.nan_to_num(data)
         np.save(out_file, np.c_[X,y])
 
     print(f'Density: {nnz/(n*d)}')
@@ -157,6 +168,7 @@ def get_openml_data(dataset):
 def get_datasets():
     '''Download data from the dictionary datasets_2_test'''
     for dataset in all_datasets:
+        print(dataset)
         out_file = all_datasets[dataset]['outputFileName']
         in_dest =  all_datasets[dataset]['input_destination']
 

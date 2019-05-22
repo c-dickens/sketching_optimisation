@@ -19,15 +19,18 @@ def data_metadata():
 
 
     for data in datasets.keys():
+        if data in ["YearPredictionMSD", "w4a", "w6a", "w8a", "KDD98"]:
+            continue
         print("-"*80)
         print("Dataset: {}".format(data))
         input_file = datasets[data]["filepath"]
         input_dest = datasets[data]["input_destination"]
-        if input_dest == 'LIBSVM':
+        if datasets[data]['sparse_format'] == True:
             df = load_npz('../../' + input_file)
             df = df.tocsr()
         else:
             df = np.load('../../' + input_file)
+
         X = df[:,:-1]
         n,d = X.shape
         aspect_ratio = d/n
@@ -52,9 +55,12 @@ def data_metadata():
             density = nnz/(n*d)
             q,_ = np.linalg.qr(X)
             lev_scores = np.linalg.norm(q, axis=1)**2
+            # U,sings,_ = np.linalg.svd(X)
+            # lev_scores = np.linalg.norm(U, axis=1)**2
+            print('lev scores done')
             coherence = np.max(lev_scores)
             coherence_ratio = coherence / np.min(lev_scores)
-            rank = np.linalg.matrix_rank(X)
+            #rank = np.linalg.matrix_rank(X)
 
         print("Shape: {}".format((n,d)))
         print("Aspect ratio : {}".format(aspect_ratio))
