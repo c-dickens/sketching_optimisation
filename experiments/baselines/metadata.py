@@ -19,8 +19,6 @@ def data_metadata():
 
 
     for data in datasets.keys():
-        if data in ["YearPredictionMSD", "w4a", "w6a", "w8a", "KDD98"]:
-            continue
         print("-"*80)
         print("Dataset: {}".format(data))
         input_file = datasets[data]["filepath"]
@@ -54,7 +52,10 @@ def data_metadata():
             nnz = np.count_nonzero(X)
             density = nnz/(n*d)
             q,_ = np.linalg.qr(X)
+            print(q.shape)
+            print(q[0,:10])
             lev_scores = np.linalg.norm(q, axis=1)**2
+            print(lev_scores)
             # U,sings,_ = np.linalg.svd(X)
             # lev_scores = np.linalg.norm(U, axis=1)**2
             print('lev scores done')

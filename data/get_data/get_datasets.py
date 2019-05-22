@@ -54,11 +54,20 @@ all_datasets = {
 
        ### These are the OPENML datasets.
        ### Do not need a target col as this is done in the openml wrapper.
-      "KDD98" : {
-        "url" : 'https://www.openml.org/d/23513',
-        "outputFileName" : '../kdd98',
+
+      "APSFailure" : {
+        "url" : 'https://www.openml.org/d/41138',
+        "outputFileName" : '../aps',
         'input_destination' : 'OPENML',
-        'openml_id' : 23513,
+        'openml_id' : 41138,
+        'sparse_format' : False
+      },
+
+      "albert" : {
+        "url" : 'https://www.openml.org/d/41147',
+        "outputFileName" : '../albert',
+        'input_destination' : 'OPENML',
+        'openml_id' : 41147,
         'sparse_format' : False
       },
 
@@ -158,8 +167,8 @@ def get_openml_data(dataset):
     else:
         nnz = np.count_nonzero(X)
         data = np.c_[X,y]
-        data = np.nan_to_num(data)
-        np.save(out_file, np.c_[X,y])
+        data[np.isnan(data)] = 0
+        np.save(out_file, data)
 
     print(f'Density: {nnz/(n*d)}')
 
