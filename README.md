@@ -9,7 +9,7 @@ Experiment `exp` is located in `experiments/` and the corresponding output is fo
 `output/exp`.
 Note that there will be intermediate directories in the above substitution.
 1. `baselines/metadata.py` -- Computes the basic metadata for the real world datasets used.
-
+2. `baselines/summary_performance.py` -- Performs a comparison (time and error) of the competing methods.
 
 To run these experiments:
 0. Install external dependency for Fast Hadamard Transform (see below)
