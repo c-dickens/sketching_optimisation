@@ -15,7 +15,7 @@ def data_to_test():
     To ensure the data-target test passes for the SRHT
     then length of the input should be a power of 2.
     '''
-    data = np.random.randn(2**12,50) / np.random.randn(2**12,50)
+    data = np.random.randn(2**14,100) #/ np.random.randn(2**12,50)
     return data
 
 @pytest.fixture
@@ -80,38 +80,38 @@ def test_summary_size(data_to_test,all_sketch_methods):
             assert np.array_equal(sparse_data.data, summary.vals)
             _sketch = summary.sketch()
 
-# def test_embedding_improves_with_proj_dim(data_to_test,all_sketch_methods):
-#     '''
-#     Test that error decreases as we increase projection dimension.
-#
-#     nb. This test should be used as a calibration tool as *not all* tests
-#     preserve the ordering on the error as the sketch dimension increases.
-#     As a result "failing" the test isn't necessarily bad provided it doesn't
-#     happen too regularly.
-#     Note that the errors are generaly relatively quite similar.
-#     '''
-#     n,d = data_to_test.shape
-#     sketch_dims = [d,10*d,20*d]
-#     errors = [0,0,0]
-#     trials = 5
-#     covariance = data_to_test.T@data_to_test
-#
-#     for sketch_method in all_sketch_methods:
-#         for idx in range(len(sketch_dims)):
-#             sketch_dim = sketch_dims[idx]
-#             print(idx)
-#             error = 0
-#             for i in range(trials):
-#                 summary = rp(data_to_test,sketch_dim,sketch_method)
-#                 SA = summary.sketch()
-#                 sketch_covariance = SA.T@SA
-#                 error += np.linalg.norm(sketch_covariance - covariance,ord='fro')/np.linalg.norm(covariance,ord='fro')
-#             errors[idx] = error / trials
-#
-#         print('Errors for {}\n'.format(sketch_method))
-#         print(errors)
-#         assert errors[2] <= errors[1]
-#         assert errors[1] <= errors[0]
+def test_embedding_improves_with_proj_dim(data_to_test,all_sketch_methods):
+    '''
+    Test that error decreases as we increase projection dimension.
+
+    nb. This test should be used as a calibration tool as *not all* tests
+    preserve the ordering on the error as the sketch dimension increases.
+    As a result "failing" the test isn't necessarily bad provided it doesn't
+    happen too regularly.
+    Note that the errors are generaly relatively quite similar.
+    '''
+    n,d = data_to_test.shape
+    sketch_dims = [d,10*d,20*d]
+    errors = [0,0,0]
+    trials = 5
+    covariance = data_to_test.T@data_to_test
+
+    for sketch_method in all_sketch_methods:
+        for idx in range(len(sketch_dims)):
+            sketch_dim = sketch_dims[idx]
+            print(idx)
+            error = 0
+            for i in range(trials):
+                summary = rp(data_to_test,sketch_dim,sketch_method)
+                SA = summary.sketch()
+                sketch_covariance = SA.T@SA
+                error += np.linalg.norm(sketch_covariance - covariance,ord='fro')/np.linalg.norm(covariance,ord='fro')
+            errors[idx] = error / trials
+
+        print('Errors for {}\n'.format(sketch_method))
+        print(errors)
+        assert errors[2] <= errors[1]
+        assert errors[1] <= errors[0]
 
 def test_sketch_data_targets(data_to_test,all_sketch_methods):
     '''

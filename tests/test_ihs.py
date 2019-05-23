@@ -48,7 +48,7 @@ def test_ols_one_sketch_per_iteration(all_sketch_methods):
     x_opt = np.linalg.lstsq(X,y,rcond=None)[0] # rcond just to suppres warning as per docs
     for sketch_method in all_sketch_methods:
         my_ihs = ihs(X,y,sketch_method,1000)
-        x_ihs = my_ihs.ols_fit_one_sketch(iterations=75)
+        x_ihs = my_ihs.ols_fit_one_sketch(iterations=50)
         print(sketch_method, np.linalg.norm(x_ihs - x_opt))
         #assert np.isclose(x_opt,x_ihs)
         np.testing.assert_array_almost_equal(x_ihs,x_opt)
