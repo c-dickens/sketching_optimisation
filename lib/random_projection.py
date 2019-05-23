@@ -2,6 +2,7 @@ import numpy as np
 from numba import njit
 from scipy import sparse
 from scipy.sparse import coo_matrix
+from hadamard import fastwht
 import pyfht
 
 # Helper functions
@@ -130,50 +131,62 @@ class RandomProjection:
         return S@self.dense_data
 
     def SRHT(self):
-        '''
-        Compute the Subsampled Randomized Hadamard
-        Transform (aka Fast Johnson Lindesntrauss Transform).
-
-        Compute:
-        PHDA where
-        - DA is a diagonal matrix whose entries are
-        {±1} chose uar
-        - H (DA) applies the Hadamard transform on DA
-        - P (HDA) uniformly subsamples HDA.
-
-
-        Notes:
-        The pyfht.fht_inplace doesn't seem to work so we
-        need a little bit of working space (to store the
-        FFTed versions of the columns) to do the
-        entire transform'''
-        diag = np.random.choice([1,-1], self.new_n)[:,None]
-        signed_data = diag*self.dense_data
-
-        # the [:,None] syntax is just to add a 2nd dimension
-        # so that the columns after hadamard transform can
-        # be easily appended.
-        # It is slightly quicker to generate lists, call
-        # np.array, then reshape than initialising a zero
-        # array to store the fhted columns
-
-        #Y = np.zeros((self.new_n,self.d))
-        Y = []
-        # perform the in place fht on each column
-        for _col in range(self.d):
-            # Y[:,_col] = pyfht.fht(self.data[:,_col])
-            Y.append(pyfht.fht(self.dense_data[:,_col]))
-        Y = np.array(Y)
-        Y = Y.T
-        #print(type(Y),Y.shape)
-        #print(Y)
+        diag = np.random.choice([1,-1], self.n)[:,None]
+        # print("diag shape: {}".format(diag.shape))
+        # print("input mat shape: {}".format(input_matrix.shape))
+        signed_mat = diag*self.dense_data
+        # print(signed_mat.shape)
+        S = fastwht(signed_mat)*shift_bit_length(self.n) # shift bit length is normalising factor
+        sample = np.random.choice(self.n, self.proj_dim, replace=False)
+        #sample.sort()
         # number from num_rows_data universe
-        sample = np.sort(np.random.choice(self.n,
-                                  self.proj_dim,
-                                  replace=False))
-
-        S = Y[sample] * (np.sqrt(1/self.proj_dim))
+        S = S[sample]
+        S = (self.proj_dim)**(-0.5)*S
         return S
+
+    # def SRHT(self):
+    #     '''
+    #     Compute the Subsampled Randomized Hadamard
+    #     Transform (aka Fast Johnson Lindesntrauss Transform).
+    #
+    #     Compute:
+    #     PHDA where
+    #     - DA is a diagonal matrix whose entries are
+    #     {±1} chose uar
+    #     - H (DA) applies the Hadamard transform on DA
+    #     - P (HDA) uniformly subsamples HDA.
+    #
+    #
+    #     Notes:
+    #     The pyfht.fht_inplace doesn't seem to work so we
+    #     need a little bit of working space (to store the
+    #     FFTed versions of the columns) to do the
+    #     entire transform'''
+    #     diag = np.random.choice([1,-1], self.new_n)[:,None]
+    #     signed_data = diag*self.dense_data
+    #
+    #     # the [:,None] syntax is just to add a 2nd dimension
+    #     # so that the columns after hadamard transform can
+    #     # be easily appended.
+    #     # It is slightly quicker to generate lists, call
+    #     # np.array, then reshape than initialising a zero
+    #     # array to store the fhted columns
+    #
+    #     #Y = np.zeros((self.new_n,self.d))
+    #     Y = []
+    #     # perform the in place fht on each column
+    #     for _col in range(self.d):
+    #         # Y[:,_col] = pyfht.fht(self.data[:,_col])
+    #         Y.append(pyfht.fht(self.dense_data[:,_col]))
+    #     Y = np.array(Y)
+    #     Y = Y.T
+    #     #print(type(Y),Y.shape)
+    #     #print(Y)
+    #     # number from num_rows_data universe
+    #     sample = np.random.choice(self.n, self.proj_dim, replace=False)
+    #
+    #     S = Y[sample] * (np.sqrt(1/(self.proj_dim)))
+    #     return S
 
     def CountSketch(self):
         '''Compute the CountSketch transform of the data.
