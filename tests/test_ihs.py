@@ -34,8 +34,11 @@ def test_ols_new_sketch_per_iteration(all_sketch_methods):
     for sketch_method in all_sketch_methods:
         my_ihs = ihs(X,y,sketch_method,500)
         x_ihs = my_ihs.ols_fit_new_sketch(iterations=20)
+        x_ihs_track, error_track = my_ihs.ols_fit_new_sketch_track_errors(iterations=20)
         print(sketch_method, np.linalg.norm(x_ihs - x_opt))
+        print(f'Tracking {sketch_method}, error {np.linalg.norm(x_ihs_track - x_opt)}')
         assert np.allclose(x_opt,x_ihs)
+        assert np.allclose(x_opt,x_ihs_track)
 
 def test_ols_one_sketch_per_iteration(all_sketch_methods):
     '''
@@ -49,6 +52,9 @@ def test_ols_one_sketch_per_iteration(all_sketch_methods):
     for sketch_method in all_sketch_methods:
         my_ihs = ihs(X,y,sketch_method,1000)
         x_ihs = my_ihs.ols_fit_one_sketch(iterations=50)
+        x_ihs_track, error_track = my_ihs.ols_fit_one_sketch_track_errors(iterations=20)
         print(sketch_method, np.linalg.norm(x_ihs - x_opt))
+        print(f'Tracking {sketch_method}, error {np.linalg.norm(x_ihs_track - x_opt)}')
         #assert np.isclose(x_opt,x_ihs)
         np.testing.assert_array_almost_equal(x_ihs,x_opt)
+        assert np.allclose(x_opt,x_ihs_track)
