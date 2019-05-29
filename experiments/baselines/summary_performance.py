@@ -12,7 +12,7 @@ from data_config import datasets
 from lib.random_projection import RandomProjection as rp
 
 ##### EXPERIMENTAL GLOBAL PARAMETERS
-NTRIALS = 10
+NTRIALS = 1
 projection_dimensions = [1,2,4,8,10]
 sketches = ['gaussian','srht','countSketch','sjlt']
 ###################################
