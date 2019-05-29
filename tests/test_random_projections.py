@@ -34,6 +34,16 @@ def test_raises_exception_proj_dim_larger_than_n(data_to_test,all_sketch_methods
             print('Testing ', sketch_method)
             sX = rp(data_to_test,n+1,sketch_method)
 
+def test_accepts_non_power2(data_to_test,all_sketch_methods):
+    '''Ensures that the projection dimension is smaller than n'''
+    n,d = data_to_test.shape
+    noise = np.random.randn(10,d)
+    _data = np.concatenate((data_to_test,noise),axis=0)
+    for sketch_method in all_sketch_methods:
+        sX = rp(_data,5*d,sketch_method)
+        _sketch = sX.sketch()
+        assert _sketch.shape == (5*d,d)
+
 def test_summary_method(data_to_test,all_sketch_methods):
     '''
     Tests that the correct sketch method

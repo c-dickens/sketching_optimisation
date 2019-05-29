@@ -131,7 +131,7 @@ class RandomProjection:
         return S@self.dense_data
 
     def SRHT(self):
-        diag = np.random.choice([1,-1], self.n)[:,None]
+        diag = np.random.choice([1,-1], self.new_n)[:,None]
         # print("diag shape: {}".format(diag.shape))
         # print("input mat shape: {}".format(input_matrix.shape))
         signed_mat = diag*self.dense_data
