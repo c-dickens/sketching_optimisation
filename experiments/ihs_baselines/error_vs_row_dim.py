@@ -15,13 +15,13 @@ from lib.utils import mean_square_error, prediction_error
 from lib.synthetic_data_generators import gaussian_design_unconstrained
 
 ##### EXPERIMENTAL GLOBAL PARAMETERS
-NTRIALS = 1  # NB THIS NEEDS TO BE 10 TO MATCH WITH PAPER
+NTRIALS = 10  # NB THIS NEEDS TO BE 10 TO MATCH WITH PAPER
 sketches = ['gaussian','srht','countSketch','sjlt']
 
 # Experiment: solution_error_vs_row_dim
 # Compare the accuracy of the estimator as the size of the data grows
 
-ROWDIMS = [100*2**i for i in range(3,11)] #
+ROWDIMS = [100*2**i for i in range(3,15)] #
 D = 10
 SKETCH_SIZE = np.int(5*D)
 ROUNDS = [1 + np.int(np.ceil(np.log2(N))) for N in ROWDIMS]
