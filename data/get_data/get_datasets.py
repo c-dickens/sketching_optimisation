@@ -17,6 +17,7 @@ from scipy.sparse import save_npz
 from sklearn.datasets import load_svmlight_file
 import os.path
 import openml
+import urllib.request
 
 all_datasets = {
     "YearPredictionMSD" : {
@@ -103,6 +104,22 @@ all_datasets = {
         'sparse_format' : False
       },
 
+      "abtaha2" : {
+        'url' : "https://sparse.tamu.edu/mat/JGD_Taha/abtaha2.mat",
+        "in_path" : 'sp_abtaha2.mat',
+        "outputFileName" : '../abtaha2',
+        'input_destination' : 'SUITE-SPARSE',
+        'sparse_format' : True
+      },
+
+      "specular" : {
+        'url' : "https://sparse.tamu.edu/mat/Brogan/specular.mat",
+        "in_path" : 'sp_specular.mat',
+        "outputFileName" : '../specular',
+        'input_destination' : 'SUITE-SPARSE',
+        'sparse_format' : True
+      }
+
 }
 
 def get_uci_data(dataset):
@@ -172,6 +189,29 @@ def get_openml_data(dataset):
 
     print(f'Density: {nnz/(n*d)}')
 
+def get_suite_sparse_data(dataset):
+    '''Wrapper to download the suite sparse datasets.'''
+    print(f'Getting dataset {dataset}')
+    print(dataset)
+    data_file = all_datasets[dataset]['in_path']
+    out_file = all_datasets[dataset]['outputFileName']
+    mat = scipy.io.loadmat(data_file)
+    X = mat['A']
+    y = mat['b']
+    y = y.toarray()
+
+
+    nnz = X.count_nonzero()
+    n,d = X.shape
+    print(f'Shape of data: {n},{d}, {y.shape}')
+    print(f'Aspect ratio: {d/n}')
+    print(f'Type of data: {type(X)}')
+    print(f'Density: {nnz/(n*d)}')
+    X = X.toarray()
+    data = coo_matrix(np.c_[X,y])
+    save_npz(out_file,data)
+
+
 
 
 def get_datasets():
@@ -195,7 +235,8 @@ def get_datasets():
             elif in_dest == 'OPENML':
                 get_openml_data(dataset)
 
-
+            elif in_dest == 'SUITE-SPARSE':
+                get_suite_sparse_data(dataset)
 
 
 if __name__ == "__main__":

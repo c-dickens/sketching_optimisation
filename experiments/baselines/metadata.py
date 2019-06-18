@@ -41,11 +41,17 @@ def data_metadata():
             # leverage scores as we are projecting onto NUM_SING_VECTORS
             # Can grow up to d but takes longer to compute the scores.
             NUM_VECTORS_FOR_PROJECTION = np.int(d)-1
-            U, _,_ = sparse.linalg.svds(X,NUM_VECTORS_FOR_PROJECTION)
-            lev_scores = np.linalg.norm(U, axis=1)**2
-            coherence = np.max(lev_scores)
-            coherence_ratio = coherence / np.min(lev_scores)
-            rank = d
+            if d < 500:
+                U, _,_ = sparse.linalg.svds(X,NUM_VECTORS_FOR_PROJECTION)
+                lev_scores = np.linalg.norm(U, axis=1)**2
+                coherence = np.max(lev_scores)
+                coherence_ratio = coherence / np.min(lev_scores)
+                rank = d
+            else:
+                # will time out so just set some proxy values
+                coherence = 1.0
+                coherence_ratio = 1.0
+                rank = d
         else:
             print('Dense operations')
             aspect_ratio = d/n
