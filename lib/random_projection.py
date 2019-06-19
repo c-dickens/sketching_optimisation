@@ -40,7 +40,8 @@ class RandomProjection:
         Sketch Type support args:
         1. gaussian
         2. srht
-        3. sjlt
+        3. sjlt -- default col_sparsity is 4
+        4. countsketch
         '''
         self.data = data
         self.n, self.d = data.shape
