@@ -113,7 +113,7 @@ class RandomProjection:
         elif self.sketch_type is 'sjlt' or 'countSketch':
             self.col_sparsity = col_sparsity
             if self.sketch_type is 'sjlt' and self.col_sparsity == 1:
-                self.col_sparsity = 2
+                self.col_sparsity = 4
 
         ## Function dictionary to call later on.
 
