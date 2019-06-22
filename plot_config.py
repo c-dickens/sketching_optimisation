@@ -17,7 +17,8 @@ sketch_names_print_version = {
     'countSketch' : 'CountSketch',
     'sjlt'        : 'SJLT',
     'srht'        : 'SRHT',
-    'gaussian'    : 'Gaussian'
+    'gaussian'    : 'Gaussian',
+    'Sketch & Solve' : 'Sketch \& Solve'
 }
 
 data_names_print_version = {
@@ -57,23 +58,27 @@ def update_rcParams():
         'text.usetex'         : True     ,
         'text.latex.unicode'  : False     })
 
-plotting_params = {"CountSketch" : {"colour" : "b",
+plotting_params = {"countSketch" : {"colour" : "b",
                                     "line_style" : '-',
                                     "marker" : "o" },
-                  "SparseJLT" : {"colour" : "m",
+                  "sjlt" : {"colour" : "m",
                                  "line_style" : '-',
                                  "dashes" : [8, 4, 2, 4, 2, 4], #mpl only has 4 linestyles so do custom dashes
                                  "marker" : "d" },
-                   "SRHT" : {"colour" : "k",
+                   "srht" : {"colour" : "k",
                              "marker" : "s",
                              "line_style" : ':'},
-                   "Gaussian" : {"colour" : "r",
+                   "gaussian" : {"colour" : "r",
                                  "marker" : "v",
                                  "line_style" : "-."},
-                   "Classical" : {"colour" : "m",
-                                  "marker" : "*"},
-                    "Exact" : {"colour" : "teal",
-                               "marker" : "^"}
+                   "Sketch & Solve" : {"colour" : "g",
+                                  "marker" : "x",
+                                  "line_style" : '-',
+                                  "dashes" : [2, 4, 2, 2, 4, 2]
+                                  }, #mpl only has 4 linestyles so do custom dashes},
+                    "Exact" : {"colour" : "cyan",
+                               "marker" : "*",
+                                "line_style" : ':'}
                                   }
 
 # nb. the marker styles are for the plots with multiple sketch settings.

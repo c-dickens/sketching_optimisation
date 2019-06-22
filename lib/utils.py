@@ -2,6 +2,7 @@
 
 import numpy as np
 import scipy as sp
+import scipy.sparse as sparse
 from sklearn.linear_model import Lasso
 from time import process_time
 
@@ -26,6 +27,18 @@ def original_lasso_objective(X,y, regulariser,x, penalty=False):
 def sklearn_wrapper(X,y,n,d, regulariser, trials):
     '''solves the lasso problem in the sklearn sense by dividing out number
     of rows for normalisation.'''
+
+    print(type(X))
+    print(isinstance(X,np.ndarray))
+    # it would be preferable to use the
+    # if ~isinstance(X,np.ndarray):
+    # syntax but for some reason this fails on APSFailure.
+    if type(X) != np.ndarray:
+        print(f'type(X)={type(X)} not ndarray so converting')
+        X = X.toarray()
+        y = np.squeeze(y.toarray())
+        print(X.shape,type(X))
+        print(y.shape,type(y))
 
     clf = Lasso(regulariser)
     lasso_time = 0

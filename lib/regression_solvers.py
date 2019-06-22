@@ -1,5 +1,6 @@
 import numpy as np
 import cvxopt as cp
+cp.solvers.options['show_progress'] = False
 
 
 def lasso_solver(data,targets, constraint):
