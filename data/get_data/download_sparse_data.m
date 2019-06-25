@@ -19,8 +19,17 @@ for ii = 1:2
             b = b(:,1) ; 
         end
     catch
-        A = data(:,end-1) ; 
+        A = data(:,1:end-1) ; 
         b = data(:,end) ; 
+    end
+    
+    if ii == 2
+        rng(100)
+        b = randn(size(A,1),1) ; 
+        cols = randperm(size(A,2)) ;
+        A = A(:,cols(1:50)) ; 
+        
+        disp(100*nnz(A)/(size(A,1)*size(A,2)))
     end
     disp(size(A)) ; 
     disp(size(b)) ; 

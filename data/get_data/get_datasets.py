@@ -198,7 +198,10 @@ def get_suite_sparse_data(dataset):
     mat = scipy.io.loadmat(data_file)
     X = mat['A']
     y = mat['b']
-    y = y.toarray()
+
+    print('Type(y) = ',type(y))
+    if type(y) != np.ndarray:
+        y = y.toarray()
 
 
     nnz = X.count_nonzero()
