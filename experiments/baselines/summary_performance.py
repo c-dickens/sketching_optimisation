@@ -32,6 +32,8 @@ def summary_time_quality():
     pretty.pprint(summary_time_quality_results)
 
     for data in datasets.keys():
+        if data != 'specular':
+            continue
         print("-"*80)
         print("Dataset: {}".format(data))
         input_file = datasets[data]["filepath"]
@@ -63,22 +65,22 @@ def summary_time_quality():
 
 
         for gamma,sketch_type in itertools.product(projection_dimensions,sketches):
-            if data == 'specular' and sketch_type == 'gaussian' and gamma > 2:
-                print('Timeout so autoset')
-                if gamma  == 4:
-                    sketch_time = 336.0
-                elif gamma == 8:
-                    sketch_time = 1823.0
-                elif gamma == 10:
-                    sketch_time = 0.0
-                frob_error = 0.0
-                spec_error = 0.0
-                product_time = 0.0
-                summary_time_quality_results[data][sketch_type][gamma]['sketch_time'] = sketch_time
-                summary_time_quality_results[data][sketch_type][gamma]['product_time'] = product_time
-                summary_time_quality_results[data][sketch_type][gamma]['frob_error'] = frob_error
-                summary_time_quality_results[data][sketch_type][gamma]['spec_error'] = spec_error
-                continue
+            # if data == 'specular' and sketch_type == 'gaussian' and gamma > 2:
+            #     print('Timeout so autoset')
+            #     if gamma  == 4:
+            #         sketch_time = 336.0
+            #     elif gamma == 8:
+            #         sketch_time = 1823.0
+            #     elif gamma == 10:
+                    # sketch_time = 0.0
+                # frob_error = 0.0
+                # spec_error = 0.0
+                # product_time = 0.0
+                # summary_time_quality_results[data][sketch_type][gamma]['sketch_time'] = sketch_time
+                # summary_time_quality_results[data][sketch_type][gamma]['product_time'] = product_time
+                # summary_time_quality_results[data][sketch_type][gamma]['frob_error'] = frob_error
+                # summary_time_quality_results[data][sketch_type][gamma]['spec_error'] = spec_error
+                # continue
             print(gamma,sketch_type)
             print('*'*80)
             sketch_time = 0
@@ -122,6 +124,7 @@ def summary_time_quality():
     pretty = PrettyPrinter(indent=4)
     pretty.pprint(summary_time_quality_results)
     with open('../../output/baselines/summary_time_quality_results.json', 'w') as outfile:
+    #with open('../../output/baselines/summary_time_quality_specular.json', 'w') as outfile:
        json.dump(summary_time_quality_results, outfile)
 
 if __name__ == "__main__":

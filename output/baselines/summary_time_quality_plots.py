@@ -25,6 +25,7 @@ np.set_printoptions(3)
 bar_patterns = ('-', 'o','+','*','\\', 'O', 'x',)
 bar_cols = ['lightcoral','bisque','lightsteelblue', 'thistle','white']
 data2time = ['w8a', 'w6a']
+SAVE_DIR = "../../figures/baselines/"
 ###################################
 
 def plot_summary_times():
@@ -291,14 +292,19 @@ def plot_speedups():
                          legend=False,ax=speedup_ax)
     dataset_labels = [data_names_print_version[_] for _ in plotting_df.index]
     speedup_ax.set_xticklabels(dataset_labels,rotation=45)
+    speedup_ax.set_ylabel('Summary Speedup')
     #speedup_ax.bar(range(len(plotting_dict)),plotting_dict.values(),align='center')
     # speedup_ax.set_xticks(range(len(plotting_dict)), list(plotting_dict.keys()))
     #speedup_ax.set_yscale('log')
     #speedup_ax.set_xticklabels(list(plotting_dict.keys()))
     plt.show()
+    current_dir = os.getcwd()
+    save_loc = SAVE_DIR+'speedups.pdf'
+    print('Saving at ',save_loc)
+    speedup_fig.savefig(save_loc,bbox_inches="tight")
 
 
 if __name__ == "__main__":
     #plot_summary_times()
-    plot_summary_errors()
+    #plot_summary_errors()
     plot_speedups()
