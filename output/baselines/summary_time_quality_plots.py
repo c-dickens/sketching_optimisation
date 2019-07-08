@@ -85,6 +85,8 @@ def plot_summary_times():
         time_df = time_df.set_index('gamma')
         print(time_df)
 
+        time_bottom = 10**np.floor(np.log10(np.min(time_df.values)))
+
         time_ax.set_xticks(bar_index + len(projection_dims)*(bar_width/ 2))
         for tick in time_ax.get_xticklabels():
             tick.set_rotation(45)
@@ -102,20 +104,23 @@ def plot_summary_times():
 
         # Time plots - reducing size
         time_ax.set_yscale('log')
-        time_ax.set_ylim(bottom=1E-5)
+        time_ax.set_ylim(bottom=time_bottom,top=None)
         time_ax.legend(loc=2,ncol=2,frameon=False,
                         title=data_names_print_version[dataset])
-        plt.show()
+        #plt.show()
+        fname = SAVE_DIR + 'summary_time_' + dataset + '.pdf'
+        plt.tight_layout()
+        time_fig.savefig(fname)
 
-    pretty = PrettyPrinter(indent=4)
-    pretty.pprint(results)
+    #pretty = PrettyPrinter(indent=4)
+    #pretty.pprint(results)
 
 def plot_summary_errors():
     '''Generate the plots for the summary error experiments.
 
     The error is empirical frobenius norm error.'''
     current_dir = os.getcwd()
-    exp_results = current_dir + '/summary_time_quality_results.json'
+    exp_results = current_dir + '/summary_time_quality_results_current.json'
     save_dir = '/figures/baselines/'
     print(exp_results)
 
@@ -169,6 +174,7 @@ def plot_summary_errors():
         error_df = pd.DataFrame(error_df_array,columns=cols)
         error_df = error_df.set_index('gamma')
         print(error_df)
+        error_bottom = 10**np.floor(np.log10(np.min(error_df.values)))
 
         error_ax.set_xticks(bar_index + len(projection_dims)*(bar_width/ 2))
         for tick in error_ax.get_xticklabels():
@@ -186,11 +192,14 @@ def plot_summary_errors():
                 bar.set_hatch(2*bar_patterns[row_id])
 
         # error plots - reducing size
-        error_ax.set_yscale('log')
-        error_ax.set_ylim(bottom=1E-2)
-        error_ax.legend(loc=2,ncol=2,frameon=False,
-                        title=data_names_print_version[dataset])
-        plt.show()
+        #error_ax.set_yscale('log')
+        error_ax.set_ylim(bottom=error_bottom)
+        # error_ax.legend(loc=2,ncol=2,frameon=False,
+        #                 title=data_names_print_version[dataset])
+        #plt.show()
+        fname = SAVE_DIR + 'summary_error_' + dataset + '.pdf'
+        plt.tight_layout()
+        error_fig.savefig(fname)
 
 def plot_speedups():
     '''Generate the plots for the summary speedups.
@@ -205,12 +214,16 @@ def plot_speedups():
 
     with open(exp_results) as json_file:
         results = json.load(json_file)
+    # pretty = PrettyPrinter(indent=4)
+    # pretty.pprint(results)
 
 
     # Time plots
     speedup_fig, speedup_ax = plt.subplots()
     speedup_ax.grid()
     for dataset in results.keys():
+        if dataset != 'abtaha2':
+            continue
         # if dataset not in data2time:
         #     continue
         print('*'*80)
@@ -243,12 +256,17 @@ def plot_speedups():
             sketch_idx = sorted_random_projections.index(sketch)
             #print(sketch,sketch_idx) # this is to see indexing of the cols
             sketch_time = [dataset_results[sketch][γ]['sketch_time'] for γ in projection_dims]
+            print(sketch)
+            print(sketch_time)
             time2plot[:,sketch_idx] = sketch_time
 
-
+        print('TIME TO PLOT TABLE')
+        print(time2plot)
         int_proj_dims = np.array([np.int(_) for _ in projection_dims])
         int_proj_dims = int_proj_dims[:,None]
         cols = ['gamma', 'speedup']
+
+        # ADD THE EXTRA COLUMN FOR PANDAS DATA FRAME INDEX
         speedup_df_array = np.c_[int_proj_dims,time2plot]
         speedup_df_array = np.c_[speedup_df_array[:,0], speedup_df_array[:,3]/speedup_df_array[:,1]]
         print(speedup_df_array)
@@ -261,10 +279,10 @@ def plot_speedups():
 
 
 
-        speedup_ax.set_xticks(bar_index + len(projection_dims)*(bar_width/ 2))
-        for tick in speedup_ax.get_xticklabels():
-            tick.set_rotation(45)
-        speedup_ax.set_xticklabels(list(plotting_dict.keys()))
+        # speedup_ax.set_xticks(bar_index + len(projection_dims)*(bar_width/ 2))
+        # for tick in speedup_ax.get_xticklabels():
+        #     tick.set_rotation(45)
+        # speedup_ax.set_xticklabels(list(plotting_dict.keys()))
 
         # for row_id in range(len(projection_dims)):
         #     print(row_id)
@@ -284,27 +302,27 @@ def plot_speedups():
 
     # # pretty = PrettyPrinter(indent=4)
     # # pretty.pprint(results)
-    print(plotting_dict)
-    plotting_df = pd.DataFrame.from_dict(plotting_dict,orient='index')
-    plotting_df.sort_values(by=0,inplace=True,ascending=False)
-    print(plotting_df)
-    plotting_df.plot.bar(sort_columns=True,
-                         legend=False,ax=speedup_ax)
-    dataset_labels = [data_names_print_version[_] for _ in plotting_df.index]
-    speedup_ax.set_xticklabels(dataset_labels,rotation=45)
-    speedup_ax.set_ylabel('Summary Speedup')
-    #speedup_ax.bar(range(len(plotting_dict)),plotting_dict.values(),align='center')
-    # speedup_ax.set_xticks(range(len(plotting_dict)), list(plotting_dict.keys()))
-    #speedup_ax.set_yscale('log')
-    #speedup_ax.set_xticklabels(list(plotting_dict.keys()))
-    plt.show()
-    current_dir = os.getcwd()
-    save_loc = SAVE_DIR+'speedups.pdf'
-    print('Saving at ',save_loc)
-    speedup_fig.savefig(save_loc,bbox_inches="tight")
+    # print(plotting_dict)
+    # plotting_df = pd.DataFrame.from_dict(plotting_dict,orient='index')
+    # plotting_df.sort_values(by=0,inplace=True,ascending=False)
+    # print(plotting_df)
+    # plotting_df.plot.bar(sort_columns=True,
+    #                      legend=False,ax=speedup_ax)
+    # dataset_labels = [data_names_print_version[_] for _ in plotting_df.index]
+    # speedup_ax.set_xticklabels(dataset_labels,rotation=45)
+    # speedup_ax.set_ylabel('Summary Speedup')
+    # #speedup_ax.bar(range(len(plotting_dict)),plotting_dict.values(),align='center')
+    # # speedup_ax.set_xticks(range(len(plotting_dict)), list(plotting_dict.keys()))
+    # #speedup_ax.set_yscale('log')
+    # #speedup_ax.set_xticklabels(list(plotting_dict.keys()))
+    # plt.show()
+    # current_dir = os.getcwd()
+    # save_loc = SAVE_DIR+'speedups.pdf'
+    #print('Saving at ',save_loc)
+    #speedup_fig.savefig(save_loc,bbox_inches="tight")
 
 
 if __name__ == "__main__":
-    #plot_summary_times()
-    #plot_summary_errors()
-    plot_speedups()
+    plot_summary_times()
+    plot_summary_errors()
+    #plot_speedups()
