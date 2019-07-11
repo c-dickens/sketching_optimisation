@@ -21,7 +21,7 @@ sketches = ['gaussian','srht','countSketch','sjlt']
 # Experiment: solution_error_vs_row_dim
 # Compare the accuracy of the estimator as the size of the data grows
 
-ROWDIMS = [100*2**i for i in range(3,15)] #
+ROWDIMS = [100*2**i for i in range(3,12)] #
 D = 10
 SKETCH_SIZE = np.int(5*D)
 ROUNDS = [1 + np.int(np.ceil(np.log2(N))) for N in ROWDIMS]
@@ -75,12 +75,10 @@ def solution_error_vs_row_dim():
         _iters = ROUNDS[experiment_index]
         ihs_sketch_size = SKETCH_SIZE
         classic_sketch_size = CLASSICAL_SKETCH_SIZE[experiment_index]
-
+        X,y, x_true = gaussian_design_unconstrained(n,D,variance=1.0)
+        x_opt = np.linalg.lstsq(X,y)[0]
         for trial in range(NTRIALS):
             print("TRIAL {}".format(trial))
-            X,y, x_true = gaussian_design_unconstrained(n,D,variance=1.0)
-            x_opt = np.linalg.lstsq(X,y)[0]
-
 
             for sketch_method in METHODS:
                 print('*'*80)

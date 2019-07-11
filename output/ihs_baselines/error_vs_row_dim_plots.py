@@ -18,11 +18,11 @@ from plot_config import plotting_params,\
                         update_rcParams,\
                         sketch_names_print_version,\
                         data_names_print_version
-
+from experiments.ihs_baselines.error_vs_row_dim import ROWDIMS
 ##### EXPERIMENTAL GLOBAL PARAMETERS
 update_rcParams()
 np.set_printoptions(3)
-ROWDIMS = [100*2**i for i in range(3,11)]
+#ROWDIMS = [100*2**i for i in range(3,14)]
 # bar_patterns = ('-', 'o','+','*','\\', 'O', 'x',)
 # bar_cols = ['lightcoral','bisque','lightsteelblue', 'thistle','white']
 # data2time = ['w8a', 'w6a']
@@ -93,27 +93,34 @@ def plot_ihs_ols_error2truth():
     pretty.pprint(PRED_ERROR)
     fig, (ax0, ax1) = plt.subplots(1,2)
 
-    for sketch_method in MSE.keys():
+    # Cheap hack just to plot the exact method first and the sketches on top
+    methods = list(MSE.keys())
+    for sketch_method in methods[::-1]:
         my_colour = plotting_params[sketch_method]["colour"]
         my_marker = plotting_params[sketch_method]["marker"]
         my_line = plotting_params[sketch_method]["line_style"]
-        if sketch_method is "Exact":
+        if sketch_method == "Exact":
             my_label = "Optimal"
+            my_size = 18
         else:
+            my_size = 6
             try:
                 my_label = sketch_names_print_version[sketch_method]
             except:
                 my_label = sketch_method
+
         ax0.plot(ROWDIMS, MSE[sketch_method],
                  color=my_colour, marker=my_marker,
-                 linewidth=2, linestyle=my_line, markersize=6, label=my_label)
+                 linewidth=2, linestyle=my_line,
+                 markersize=my_size, label=my_label)
         ax1.plot(ROWDIMS, PRED_ERROR[sketch_method],
                 color=my_colour, marker=my_marker,
-                linewidth=2, linestyle=my_line, markersize=6, label=my_label)
+                linewidth=2, linestyle=my_line,
+                markersize=my_size, label=my_label)
     ax0.set_xscale('log')
     ax0.set_yscale('log')
     ax0.set_xlabel("Row dimension $n$")
-    ax0.set_ylabel("$\|\hat{x} - x^*\|_2^2$")
+    ax0.set_ylabel("Solution Error: $\|\hat{x} - x^*\|_2^2$")
     ax0.legend()
     ax0.grid(True)
 
@@ -121,13 +128,19 @@ def plot_ihs_ols_error2truth():
     ax1.set_yscale('log')
     ax1.grid(True)
     ax1.set_xlabel("Row dimension $n$")
-    ax1.set_ylabel("$\|\hat{x} - x^*\|_A^2$")
-    ax1.legend()
+    ax1.set_ylabel("Prediction Error: $\|\hat{x} - x^*\|_A^2$")
+    #ax1.legend()
     plt.tight_layout()
-    plt.show()
+    #plt.show()
+
+    current_dir = os.getcwd()
+    print(current_dir)
+    save_dir = '../../figures/ihs_baselines/'
+    fname = save_dir + 'ols_solution_recovery.pdf'
+    fig.savefig(fname)
 
 def main():
-    plot_ihs_ols_error2opt()
+    #plot_ihs_ols_error2opt()
     plot_ihs_ols_error2truth()
 
 if __name__ == '__main__':
