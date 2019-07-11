@@ -25,7 +25,7 @@ from plot_config import plotting_params,\
 update_rcParams()
 np.set_printoptions(3)
 bar_patterns = ('-', 'o','+','*','O', '\\',  'x',)
-SAVE_DIR = '/figures/baselines/'
+SAVE_DIR = '../../figures/ihs_baselines/'
 CURRENT_DIR = os.getcwd()
 
 def plot_error_vs_dims():
@@ -38,6 +38,27 @@ def plot_error_vs_dims():
     pretty.pprint(error2truth)
 
     dimensions_tested = error2truth['Dimensions']
+    dim_labels = {16: {
+                    'Exact' : 'Exact',
+                    'Sketch & Solve' : 'Sketch \& Solve',
+                    'countSketch' : 'CountSketch',
+                    'gaussian' : 'Gaussian',
+                    'sjlt' : 'SJLT',
+                    'srht' : 'SRHT'
+                    }
+                }
+    for d in dimensions_tested:
+        if d == 16:
+            continue
+        else:
+            dim_labels[d] = {
+                'Exact' : None,
+                'Sketch & Solve' : None,
+                'countSketch' : None,
+                'gaussian' : None,
+                'sjlt' : None,
+                'srht' : None
+            }
     index = range(len(dimensions_tested))
 
     bar_width = 0.15
@@ -45,11 +66,13 @@ def plot_error_vs_dims():
 
     for ii in index:
         d = dimensions_tested[ii]
+
+
         exact_rects = ax.bar(index[ii],
                             error2truth["Exact"][d],
                             bar_width,
                             color=plotting_params['Exact']["colour"],
-                            label="Exact")
+                            label=dim_labels[d]['Exact'])
         for bar in exact_rects:
             bar.set_hatch(2*bar_patterns[0])
 
@@ -57,7 +80,7 @@ def plot_error_vs_dims():
                                  error2truth["Sketch & Solve"][d],
                                   bar_width,
                                   color=plotting_params['Sketch & Solve']["colour"],
-                                  label="Sketch \& Solve")
+                                  label=dim_labels[d]['Sketch & Solve'])
         for bar in classical_rects:
             bar.set_hatch(2*bar_patterns[1])
 
@@ -65,7 +88,7 @@ def plot_error_vs_dims():
                                                 error2truth["countSketch"][d],
                                                 bar_width,
                                                 color=plotting_params['countSketch']["colour"],
-                                                label='CountSketch')
+                                                label=dim_labels[d]['countSketch'])
         for bar in countsketch_rects:
             bar.set_hatch(2*bar_patterns[2])
 
@@ -73,7 +96,7 @@ def plot_error_vs_dims():
                                                 error2truth["sjlt"][d],
                                                 bar_width,
                                                 color=plotting_params['sjlt']["colour"],
-                                                label='SJLT')
+                                                label=dim_labels[d]['sjlt'])
         for bar in sjlt_rects:
             bar.set_hatch(2*bar_patterns[3])
 
@@ -83,7 +106,7 @@ def plot_error_vs_dims():
                                     error2truth["srht"][d],
                                     bar_width,
                                     color=plotting_params['srht']["colour"],
-                                    label='SRHT')
+                                    label=dim_labels[d]['srht'])
         for bar in srht_rects:
             bar.set_hatch(2*bar_patterns[4])
 
@@ -91,7 +114,7 @@ def plot_error_vs_dims():
                                                 error2truth["gaussian"][d],
                                                 bar_width,
                                                 color=plotting_params['gaussian']["colour"],
-                                                label='Gaussian')
+                                                label=dim_labels[d]['gaussian'])
         for bar in gaussian_rects:
             bar.set_hatch(2*bar_patterns[5])
     # rects = [exact_rects,classical_rects,countsketch_rects,\
@@ -99,12 +122,17 @@ def plot_error_vs_dims():
     # for bar in rects:
     #     bar.set_hatch(2*bar_patterns[rects.index(bar)])
 
-
+    ax.legend()
     ax.set_xticks(np.asarray(index,dtype=np.float) + 2*bar_width)
     ax.set_xticklabels(dimensions_tested)
     ax.set_ylabel('$\|\hat{x} - x^*\|_A^2$')
     ax.set_xlabel('Dimension $d$')
-    plt.show()
+    #plt.show()
+    plt.tight_layout()
+
+    fname = SAVE_DIR + 'ols_error_vs_d.pdf'
+    fig.savefig(fname)
+
 
 def main():
     plot_error_vs_dims()

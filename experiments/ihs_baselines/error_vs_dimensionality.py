@@ -38,11 +38,11 @@ def error_vs_dimensionality():
 
 
     for d in dimension:
-        n = 250*d
+        n = 100*d
         print(f'TESTING {n},{d}')
         ii = dimension.index(d)
         sampling_rate = 10
-        num_iterations = 1+np.int(np.log(n))
+        num_iterations = 5
         for method in METHODS:
             if method == 'sjlt':
                 col_sparsity = 4
@@ -67,7 +67,7 @@ def error_vs_dimensionality():
                     my_ihs = ihs(X,y,method,sketch_size,col_sparsity)
                     x_hat = my_ihs.ols_fit_new_sketch(num_iterations)
 
-                error = prediction_error(X,x_star,x_hat)
+                error = (prediction_error(X,x_star,x_hat))**(0.5)
                 error_to_truth[method][d] += error
     for _ in METHODS:
         for d in dimension:
