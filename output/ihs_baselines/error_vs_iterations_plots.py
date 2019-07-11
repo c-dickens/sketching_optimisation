@@ -30,7 +30,7 @@ def plot_error_iterations_opt():
     '''Generate the plots for the IHS OLS baseline experiments while measuring
     the error to x_opt and x* over a sequence of iterations'''
 
-    error2opt = CURRENT_DIR + '/error_vs_iters_opt.npy'
+    error2opt = CURRENT_DIR + '/error_vs_iters_opt_5_10.npy'
 
 
 
@@ -62,11 +62,17 @@ def plot_error_iterations_opt():
     opt_ax.set_yscale('log')
     opt_ax.legend()
     opt_ax.set_xlabel('Iterations')
-    opt_ax.set_ylabel('$\|\hat{x} - x_{OPT}\|_A^2$')
+    opt_ax.set_ylabel('Prediction Error: $\|\hat{x} - x_{OPT}\|_A^2$')
     #ticks = [_ for _ in iters if _ % 5 ==0]
     #ticks.insert(0,1)
     opt_ax.set_xticks(opt_ticks)
-    plt.show()
+    #plt.show()
+    plt.tight_layout()
+    current_dir = os.getcwd()
+    print(current_dir)
+    save_dir = '../../figures/ihs_baselines/'
+    fname = save_dir + 'ols_error2opt_5_10.pdf'
+    opt_fig.savefig(fname)
 
 
 def plot_error_iterations_truth():
@@ -80,7 +86,7 @@ def plot_error_iterations_truth():
     different to thos in the original IHS paper as they work with
     the squre root of out result.
     '''
-    error2truth = CURRENT_DIR + '/error_vs_iters_truth.npy'
+    error2truth = CURRENT_DIR + '/error_vs_iters_truth_5_10.npy'
 
 
 
@@ -108,14 +114,19 @@ def plot_error_iterations_truth():
                         markersize=6,
                         linestyle=my_line,
                         label=my_label)
-
     truth_ax.legend()
     truth_ax.set_xlabel('Iterations')
-    truth_ax.set_ylabel('$\|\hat{x} - x^*\|_A^2$')
+    truth_ax.set_ylabel('Prediction Error: $\|\hat{x} - x^*\|_A^2$')
     truth_ticks = [_ for _ in iters if _ % 5 ==0]
     truth_ticks.insert(0,1)
     truth_ax.set_xticks(truth_ticks)
-    plt.show()
+    #plt.show()
+    plt.tight_layout()
+    current_dir = os.getcwd()
+    print(current_dir)
+    save_dir = '../../figures/ihs_baselines/'
+    fname = save_dir + 'ols_error2truth_5_10.pdf'
+    truth_fig.savefig(fname)
 
 def plot_error_iterations_truth_zoomed():
     '''Could use a generic function but we need more control

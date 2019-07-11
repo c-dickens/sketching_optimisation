@@ -27,7 +27,7 @@ sketches = ['gaussian','srht','countSketch','sjlt']
 def error_vs_iterations():
     n = 6_000
     d = 200
-    gamma_vals = [4,6,8]
+    gamma_vals = [5,10] #[4,6,8]
     number_iterations = 20 # 40 #np.asarray(np.linspace(5,40,8), dtype=np.int)
     # Output dictionaries
     error_to_lsq = {sketch_name : {} for sketch_name in sketches}
@@ -81,8 +81,8 @@ def error_vs_iterations():
 
     # Save the dictionaries
     save_dir = '../../output/ihs_baselines/'
-    np.save(save_dir+'error_vs_iters_opt',error_to_lsq)
-    np.save(save_dir+'error_vs_iters_truth',error_to_truth)
+    np.save(save_dir+'error_vs_iters_opt_5_10',error_to_lsq)
+    np.save(save_dir+'error_vs_iters_truth_5_10',error_to_truth)
 
 def main():
     error_vs_iterations()
