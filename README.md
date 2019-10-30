@@ -49,3 +49,10 @@ at the final line of the `bash_profile`, finally save then `source .bash_profile
 4. Open ipython, do `import sys --> sys.path` and check that `your_path_name`
 is displayed.
 5. Go back to the `matrix_sketching` directory and run the tests.
+
+### Extensions
+- Doing this with more general functions akin to Newton Sketch
+- Bias-variance tradeoff with this estimation method?
+- Combine this with SGD?
+- Rank-deficient of weak embeddings? Is there a range of results here?
+- SVM or SVR?
