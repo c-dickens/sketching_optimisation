@@ -31,7 +31,9 @@ data_names_print_version = {
     'APSFailure' : 'APS',
     'albert' : 'Albert',
     'fars' : 'Fars',
-    'YearPredictionMSD' : 'Years'
+    'YearPredictionMSD' : 'Years',
+    'abtaha2' : 'Abtaha',
+    'specular' : 'Specular'
 }
 
 def update_rcParams():
