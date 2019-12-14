@@ -3,6 +3,8 @@
 Examples of random projection sketching methods to reduce the computational
 burden of intensive matrix computations.
 
+All datasets can be downloaded in the required format from https://drive.google.com/open?id=1w-EwPNmi-qiddui1RfSBhbrylL_8LlgN
+Note that these must be placed in the `data/` directory e.g. `data/YearPredictionMSD.npy` 
 
 ### Completed Experiments:
 Experiment `exp` is located in `experiments/` and the corresponding output is found in
@@ -43,12 +45,12 @@ method which would be better for repeated calls in IHS.
 1. `git clone https://bitbucket.org/vegarant/fastwht.git` --> then run install
 in here by `cd python`, `python setup.py`, `python test.py`
 1. Get the directory path for `fastwht/python` which should be `your_path_name =
-*/matrix_sketching/lib/fastwht/python`
+*/sketching_optimisation/lib/fastwht/python`
 3. Find `.bash_profile` or equivalent and add `export PYTHONPATH=$PYTHONPATH:your_path_name`,
 at the final line of the `bash_profile`, finally save then `source .bash_profile`.
 4. Open ipython, do `import sys --> sys.path` and check that `your_path_name`
 is displayed.
-5. Go back to the `matrix_sketching` directory and run the tests.
+5. Go back to the `sketching_optimisation` directory and run the tests.
 
 ### Extensions
 - Doing this with more general functions akin to Newton Sketch
