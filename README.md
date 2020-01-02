@@ -13,29 +13,35 @@ Note that these must be placed in the `data/` directory e.g. `data/YearPredictio
 Most of the dependencies should come with Anaconda distributions but a
 couple more might be needed for the optimisation and the fast sketching.
 All but the last one can be installed via `pip install`.
-`numpy`
-`scipy`
-`pandas`
-`numba`
-`timeit`
-`pprint`
-`sklearn`
-`cvxopt`
-`matplotlib`
-`json`
-FastWHT (see _Installation of fastwht repo_ below)
+- Standard: `numpy`,`scipy`, `pandas`,`sklearn`, `matplotlib`,`json`
+- Miscellaneous: `numba`,`timeit`, `pprint`, `cvxopt`
+- External: FastWHT (see _Installation of fastwht repo_ below)
 
-### Completed Experiments:
+## Completed Experiments:
 Experiment `exp` is located in `experiments/` and the corresponding output is found in
 `output/exp`.
 Note that there will be intermediate directories in the above substitution.
-1. `baselines/metadata.py` -- Computes the basic metadata for the real world datasets used.
-2. `baselines/summary_performance.py` -- Performs a comparison (time and error) of the competing methods.
+1. `baselines/`
+
+- `metadata.py` -- computes the basic metadata for the real world datasets used.
+- `summary_performance.py` - evaluates speed and error performance of the summary methods
+
+2. `ihs_baselines/`
+
+- `error_vs_dimensionality.py`,`error_vs_num_iters.py`, `error_vs_row_dim.py`-
+Mostly reproduce the IHS synthetic experiments
+- `sjlt_error_sparsity.py` - compares the IHS with sparse embeddings at different
+sparsity settings
+
+3 `ihs_timing/`
+
+- `ihs_lasso_real.py`, `ihs_lasso_synthetic.py` evaluates the real time performance
+of various sketching techniques in real/synthetic examples, respectively.
 
 To run these experiments:
 0. Install external dependency for Fast Hadamard Transform (see below)
 1. Ensure that the necessary datasets are downloaded.  The UCI ones have the url hardcoded,
-howevever you will need to follow the urls in the `all_datasets` dictionary in `get_datasets.py`
+however you will need to follow the urls in the `all_datasets` dictionary in `get_datasets.py`
 to download the libsvm files and the suite-sparse datasets.
 These *must* be saved in the same directory as `get_datasets.py`.
 The script will automatically download the UCI and OPENML datasets.
