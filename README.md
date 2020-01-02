@@ -3,8 +3,27 @@
 Examples of random projection sketching methods to reduce the computational
 burden of intensive matrix computations.
 
+## Dependencies
+
+*Data:*
 All datasets can be downloaded in the required format from https://drive.google.com/open?id=1w-EwPNmi-qiddui1RfSBhbrylL_8LlgN
-Note that these must be placed in the `data/` directory e.g. `data/YearPredictionMSD.npy` 
+Note that these must be placed in the `data/` directory e.g. `data/YearPredictionMSD.npy`
+
+*Packages*
+Most of the dependencies should come with Anaconda distributions but a
+couple more might be needed for the optimisation and the fast sketching.
+All but the last one can be installed via `pip install`.
+`numpy`
+`scipy`
+`pandas`
+`numba`
+`timeit`
+`pprint`
+`sklearn`
+`cvxopt`
+`matplotlib`
+`json`
+FastWHT (see _Installation of fastwht repo_ below)
 
 ### Completed Experiments:
 Experiment `exp` is located in `experiments/` and the corresponding output is found in
