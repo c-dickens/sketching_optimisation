@@ -21,6 +21,7 @@ from lib.regression_solvers import lasso_solver
 
 ############################## GLOBALS ##############################
 sketches = ['gaussian','srht','countSketch','sjlt']
+data2test = ['w4a']
 #######################################################################
 
 
@@ -130,7 +131,7 @@ def error_vs_time_real_data(data_name,X,y,penalty,sampling_factors,trials,times,
 
 def main():
     sampling_factors = [5,10] #time_error_ihs_grid['sketch_factors']
-    n_trials = 5 #time_error_ihs_grid['num trials']
+    n_trials = 10 #time_error_ihs_grid['num trials']
     time_range = [0.5,1.0,1.5,2.0,2.5] #time_error_ihs_grid['times']
     sklearn_lasso_bound = 1.0
     # for n,d in itertools.product(time_error_ihs_grid['rows'],time_error_ihs_grid['columns']):
@@ -141,14 +142,12 @@ def main():
     saved_datasets = all_datasets.keys()
     print(saved_datasets)
     new_data_2_sketch= {}
-    # W8A done,
-    data2test = ['specular']
     for data in all_datasets:
         print(data)
         if data not in data2test:
             continue
         else:
-            if data == 'specular':
+            if data == 'specular' or data == 'covertype':
                 time_range = [0.05,0.25,0.5,0.75,1.0]
             print("Dataset: {}".format(data))
             input_file = all_datasets[data]["filepath"]
@@ -177,6 +176,8 @@ def main():
             n,d = X.shape
             nn,d = X.shape
             n = 2**np.int(np.floor(np.log2(nn)))
+            if data == 'covertype':
+                n = 2**18
             X = X[:n,:]
             y = y[:n,]
             print('Shape of X = ', X.shape)
