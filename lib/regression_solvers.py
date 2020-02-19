@@ -44,15 +44,13 @@ def lasso_solver(data,targets, constraint):
     # print('P ', np.linalg.matrix_rank(P))
     res = cp.solvers.qp(P,q,G,h)
     w = np.squeeze(np.array(res['x']))
-    #w[w < 1E-8] = 0
+    w[np.abs(w) < 1E-8] = 0
     #x = np.zeros((len(w[:d]),))
     # x += w[:d]
     # x -= w[d:]
-    print(w)
-    print(np.c_[w[:d], w[d:]])
 
     x = w[:d] - w[d:]
-    x[np.abs(x)<1E-8]=0.0
+    #x[np.abs(x)<1E-8]=0.0
     return(x)
 
 
