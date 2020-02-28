@@ -1,5 +1,7 @@
 # sketching_optimisation
 
+TODO: implement the srht using ffht library.
+
 Examples of random projection sketching methods to reduce the computational
 burden of intensive matrix computations.
 
